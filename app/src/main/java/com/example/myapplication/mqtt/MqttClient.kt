@@ -2,14 +2,11 @@ package com.example.myapplication.mqtt
 
 import android.content.Context
 import android.util.Log
+import com.example.myapplication.*
 import org.eclipse.paho.android.service.MqttAndroidClient
-import org.eclipse.paho.client.mqttv3.IMqttActionListener
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
-import org.eclipse.paho.client.mqttv3.IMqttToken
-import org.eclipse.paho.client.mqttv3.MqttCallbackExtended
+import org.eclipse.paho.client.mqttv3.*
 import org.eclipse.paho.client.mqttv3.MqttClient
-import org.eclipse.paho.client.mqttv3.MqttException
-import org.eclipse.paho.client.mqttv3.MqttMessage
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 
 class MqttClient(private val context: Context) {
 
@@ -23,7 +20,17 @@ class MqttClient(private val context: Context) {
         client =
             MqttAndroidClient(context, broker,
                 MqttClient.generateClientId())
-        client.connect()
+
+        // set connection options before connecting
+        val connectionOptions = MqttConnectOptions();
+        connectionOptions.userName = SOLACE_CLIENT_USER_NAME
+        connectionOptions.password = SOALCE_CLIENT_PASSWORD.toCharArray()
+        connectionOptions.connectionTimeout = SOLACE_CONNECTION_TIMEOUT
+        connectionOptions.keepAliveInterval = SOLACE_CONNECTION_KEEP_ALIVE_INTERVAL
+        connectionOptions.isAutomaticReconnect = SOLACE_CONNECTION_RECONNECT
+        connectionOptions.isCleanSession = SOLACE_CONNECTION_CLEAN_SESSION
+        // connect to broker
+        client.connect(connectionOptions)
     }
 
     fun setCallBack(topics: Array<String>? = null,
@@ -54,11 +61,10 @@ class MqttClient(private val context: Context) {
     }
 
     fun publishMessage(topic: String, msg: String) {
-
         try {
             val message = MqttMessage()
             message.payload = msg.toByteArray()
-            client.publish(topic, message.payload, 0, true)
+            client.publish(topic, message.payload, 0, false)
             Log.d(TAG, "$msg published to $topic")
         } catch (e: MqttException) {
             Log.d(TAG, "Error Publishing to $topic: " + e.message)
