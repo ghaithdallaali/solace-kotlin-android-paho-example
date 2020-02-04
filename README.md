@@ -1,10 +1,10 @@
 # solace-kotlin-android-paho-example
-A hello-world Android application written in Kotlin that uses Solace as a pub/sub message broker
+A hello-world Android application written in Kotlin that uses Solace as an MQTT pub/sub message broker
 
 ## Creating a Solace Cloud Service
 * Follow the "Get Started" steps [here](https://solace.com/products/event-broker/cloud/) to create a Solace Cloud account if you don't already have one
 * Create a free Messaging Servie in a cloud provider and region of your choosing
-* Once the Messaging Service is up, navigate to its "Connect" tab and find its Connection Details. These details will be used to connect your application(s) to the Solace PubSub+ Message broker 
+* Once the Messaging Service is up, navigate to its "Connect" tab and find its MQTT Connection Details. These details will be used to connect your application(s) to the Solace PubSub+ Message broker 
 
 ![Alt text](/docs/solaceConnectionInfo.png)
 <!-- .element height="50%" width="50%" -->
