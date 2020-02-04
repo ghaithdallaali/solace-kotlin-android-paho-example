@@ -1,11 +1,16 @@
 package com.example.myapplication
 
 
-// Solace Broker constants
+// Solace PubSub+ Broker Options
 
-const val SOLACE_MQTT_HOST = "tcp://<service_id>.messaging.solace.cloud:8443"
+// Fill in your Solace Cloud PubSub+ Broker's 'MQTT Host' and 'Password' options.
+// This information can be found under:
+// https://console.solace.cloud/services/ -> <your-service> -> 'Connect' -> 'MQTT'
+const val SOLACE_MQTT_HOST = "tcp://PLACEHOLDER_SERVICE_ID.messaging.solace.cloud:1883"
+const val SOLACE_CLIENT_PASSWORD = "PLACEHOLDER_PASSWORD"
+
+// Other options
 const val SOLACE_CLIENT_USER_NAME = "solace-cloud-client"
-const val SOALCE_CLIENT_PASSWORD = "<password>"
 const val SOLACE_CONNECTION_TIMEOUT = 3
 const val SOLACE_CONNECTION_KEEP_ALIVE_INTERVAL = 60
 const val SOLACE_CONNECTION_CLEAN_SESSION = true
