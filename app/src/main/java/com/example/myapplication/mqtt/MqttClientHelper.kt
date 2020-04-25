@@ -114,6 +114,6 @@ class MqttClientHelper(context: Context?) {
 
     fun destroy() {
         mqttAndroidClient.unregisterResources()
-        mqttAndroidClient.close()
+        mqttAndroidClient.disconnect()
     }
 }
