@@ -16,7 +16,7 @@ class MqttClientHelper(context: Context?) {
 
     var mqttAndroidClient: MqttAndroidClient
     val serverUri = SOLACE_MQTT_HOST
-    val clientId = MqttClient.generateClientId()
+    private val clientId: String = MqttClient.generateClientId()
 
     fun setCallback(callback: MqttCallbackExtended?) {
         mqttAndroidClient.setCallback(callback)
@@ -109,7 +109,7 @@ class MqttClientHelper(context: Context?) {
     }
 
     fun isConnected() : Boolean {
-        return mqttAndroidClient.isConnected()
+        return mqttAndroidClient.isConnected
     }
 
     fun destroy() {
