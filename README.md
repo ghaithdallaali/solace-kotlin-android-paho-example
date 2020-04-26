@@ -16,7 +16,6 @@ A hello-world Android application written in Kotlin that uses Solace as an MQTT 
   * `SOLACE_CLIENT_PASSWORD`
 * Modify the `TOPIC` to publish/subscribe to, as well as the `MSG` payload under `MainActivity.kt`
 * Build and run the sample app
-  * The app has two buttons, one to have the app subscribe to a topic on the Solace broker, and the other is to have the app publish a message on the same topic to the broker. If the app was subscribed to the topic before a message was published, then the message will circle back to the app, and the counter in the center of the `MainActivity` will increment.
-
+  * The app has three input fields: the topic to subscribe to, the topic to publish to, and the message payload to publish. If subscribed to a topic, you may publish to the same topic a message of your choosing. By doing that, the application is publishing the message with said message payload/content to the Solace PubSub+ Broker. The broker would then send that message to its subscribers (the app itself), and a callback on the app would be triggered to update its "Received Message Payloads"
 ![Alt text](/docs/app.png?raw=true "Sample Application")
 <!-- .element height="30%" width="30%" -->
