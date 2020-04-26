@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="action_settings">Settings</string>
+    <string name="messages_received">Rx:</string>
+    <string name="publish_to_topic">Publish to topic</string>
+    <string name="publish">Publish</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="subscribe_to_topic">Subscribe to topic</string>
+    <string name="message_payload">Message payload</string>
+    <string name="heading_msg_payload"><u>Received Message payloads</u></string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -19,15 +20,7 @@ import kotlin.concurrent.schedule
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        const val TAG = "MainActivity"
-
-        // Define these values in res/values/strings.xml
-        const val TOPIC = "my/first/topic/name"
-        const val MSG = "My string message payload"
-    }
-
-    val mqttClient by lazy {
+    private val mqttClient by lazy {
         MqttClientHelper(this)
     }
 
@@ -35,40 +28,51 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        textViewMsgPayload.movementMethod = ScrollingMovementMethod()
+
         setMqttCallBack()
 
         // initialize 'num msgs received' field in the view
-        EditText1.setText("0")
+        textViewNumMsgs.text = "0"
 
-        // pub fab button
-        fab.setOnClickListener { view ->
+        // pub button
+        btnPub.setOnClickListener { view ->
             var snackbarMsg : String
-            try {
-                mqttClient.publish(TOPIC, MSG)
-                snackbarMsg = "Published to topic '$TOPIC'!"
-            } catch (ex: MqttException) {
-                snackbarMsg = "Error publishing to topic: $TOPIC!"
+            val topic = editTextPubTopic.text.toString().trim()
+            snackbarMsg = "Cannot publish to empty topic!"
+            if (topic.isNotEmpty()) {
+                snackbarMsg = try {
+                    mqttClient.publish(topic, editTextMsgPayload.text.toString())
+                    "Published to topic '$topic'"
+                } catch (ex: MqttException) {
+                    "Error publishing to topic: $topic"
+                }
             }
-            Snackbar.make(view, snackbarMsg, Snackbar.LENGTH_LONG)
+            Snackbar.make(view, snackbarMsg, 300)
                 .setAction("Action", null).show()
+
         }
 
-        // sub fab button
-        fab2.setOnClickListener { view ->
+        // sub button
+        btnSub.setOnClickListener { view ->
             var snackbarMsg : String
-            try {
-                mqttClient.subscribe(TOPIC)
-                snackbarMsg = "Subscribed to topic '$TOPIC'!"
-            } catch (ex: MqttException) {
-                snackbarMsg = "Error subscribing to topic: $TOPIC!"
+            val topic = editTextSubTopic.text.toString().trim()
+            snackbarMsg = "Cannot subscribe to empty topic!"
+            if (topic.isNotEmpty()) {
+                snackbarMsg = try {
+                    mqttClient.subscribe(topic)
+                    "Subscribed to topic '$topic'"
+                } catch (ex: MqttException) {
+                    "Error subscribing to topic: $topic"
+                }
             }
-            Snackbar.make(view, snackbarMsg, Snackbar.LENGTH_LONG)
+            Snackbar.make(view, snackbarMsg, Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show()
         }
 
         Timer("CheckMqttConnection", false).schedule(3000) {
             if (!mqttClient.isConnected()) {
-                Snackbar.make(EditText1, "Failed to connect to: '$SOLACE_MQTT_HOST' within 3 seconds", Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(textViewNumMsgs, "Failed to connect to: '$SOLACE_MQTT_HOST' within 3 seconds", Snackbar.LENGTH_INDEFINITE)
                     .setAction("Action", null).show()
             }
         }
@@ -78,16 +82,23 @@ class MainActivity : AppCompatActivity() {
     private fun setMqttCallBack() {
         mqttClient.setCallback(object : MqttCallbackExtended {
             override fun connectComplete(b: Boolean, s: String) {
-                Log.w("Debug", "Connected to host '$SOLACE_MQTT_HOST'.")
+                val snackbarMsg = "Connected to host:\n'$SOLACE_MQTT_HOST'."
+                Log.w("Debug", snackbarMsg)
+                Snackbar.make(findViewById(android.R.id.content), snackbarMsg, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
             }
             override fun connectionLost(throwable: Throwable) {
-                Log.w("Debug", "Connected to host '$SOLACE_MQTT_HOST' lost.")
+                val snackbarMsg = "Connection to host lost:\n'$SOLACE_MQTT_HOST'"
+                Log.w("Debug", snackbarMsg)
+                Snackbar.make(findViewById(android.R.id.content), snackbarMsg, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
             }
             @Throws(Exception::class)
             override fun messageArrived(topic: String, mqttMessage: MqttMessage) {
                 Log.w("Debug", "Message received from host '$SOLACE_MQTT_HOST': $mqttMessage")
-                EditText1.setText("${EditText1.text.toString().toInt() + 1}")
-
+                textViewNumMsgs.text = ("${textViewNumMsgs.text.toString().toInt() + 1}")
+                val str: String = "------------"+ Calendar.getInstance().time +"-------------\n$mqttMessage\n${textViewMsgPayload.text}"
+                textViewMsgPayload.text = str
             }
 
             override fun deliveryComplete(iMqttDeliveryToken: IMqttDeliveryToken) {
