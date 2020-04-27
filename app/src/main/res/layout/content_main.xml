@@ -61,7 +61,7 @@
         android:id="@+id/textViewMsgPayload"
         android:layout_width="322dp"
         android:layout_height="345dp"
-        android:gravity="top"
+        android:gravity="bottom"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.528"
